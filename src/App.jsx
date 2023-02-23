@@ -184,7 +184,7 @@ async function signTransaction() {
         msgs: [
             sendMsg
         ],
-        memo: document.getElementById("memo").value
+        memo: ""
     }
 
     dataSignTransaction = await cosmosSignAmino(address, stdSignDoc);
@@ -222,7 +222,6 @@ setInterval(async function () {
 }, 2000);
 
 function App() {
-    const [memo, setMemo] = useState('memo wc2 demo');
     const [freeMsg, setFreeMsg] = useState('DOSI VAULT');
 
     return (
@@ -241,17 +240,6 @@ function App() {
                 <div id="fun" style={{display: "none"}}>
                     Address: <p id="my_address"></p>
 
-                    <div style={{borderBlock: "1px dotted"}}>
-                        Memo: <input id="memo" value={memo}
-                                     onChange={event => setMemo(event.target.value)}/>
-                        <button onClick={signTransaction}>
-                            Sign transaction
-                        </button>
-                        <div>
-                            Signature: <p id="Sign_msg_transaction"></p>
-                            Pub key: <p id="Pub_key_transaction"></p>
-                        </div>
-                    </div>
                     <div style={{borderBlock: "1px dotted"}}>
                         Free Msg: <input id="free_msg" value={freeMsg}
                                          onChange={event => setFreeMsg(event.target.value)}/>
