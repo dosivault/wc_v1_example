@@ -103,56 +103,6 @@ export function sortedJsonByKeyStringify(obj) {
     return JSON.stringify(sortObjectByKey(obj));
 }
 
-async function signTransaction() {
-    const addresses = await getAddress();
-    const address = addresses[0].bech32Address
-    const amountFinal = [
-        {
-            amount: (0.01).toString(),
-            denom: "cony",
-        }
-    ];
-
-    // fixed value: 100K units, each unit is 1 minimal token denom
-    const fee = {
-        amount: [
-            {
-                denom: "cony",
-                amount: "1",
-            },
-        ],
-        gas: '100000',
-    };
-
-    const sendMsg = {
-        typeUrl: "/cosmos.bank.v1beta1.MsgSend",
-        value: {
-            fromAddress: address,
-            toAddress: address,
-            amount: [...amountFinal],
-        },
-    };
-
-    const data = await cosmos.getAccount(address);
-
-    console.log(data)
-
-    var stdSignDoc = {
-        chain_id: chainId,
-        account_number: data.accountNumber.toString(),
-        sequence: (await cosmos.getSequence(address)).sequence.toString(),
-        fee: fee,
-        msgs: [
-            sendMsg
-        ],
-        memo: ""
-    }
-
-    dataSignTransaction = await cosmosSignAmino(address, stdSignDoc);
-    console.log(dataSignTransaction)
-
-}
-
 setInterval(async function () {
     try {
         if (!accountsWallet) {
