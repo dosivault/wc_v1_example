@@ -9,7 +9,6 @@ let accountsWallet;
 let chainId = "finschia-1";
 
 // after successful connection.
-let dataSignTransaction;
 let dataSignFreeMessage;
 
 async function connectWallet() {
@@ -67,25 +66,6 @@ async function signFreeMsg() {
     })
 }
 
-export function sortObjectByKey(obj) {
-    if (typeof obj !== "object" || obj === null) {
-        return obj;
-    }
-    if (Array.isArray(obj)) {
-        return obj.map(sortObjectByKey);
-    }
-    const sortedKeys = Object.keys(obj).sort();
-    const result = {};
-    sortedKeys.forEach((key) => {
-        result[key] = sortObjectByKey(obj[key]);
-    });
-    return result;
-}
-
-export function sortedJsonByKeyStringify(obj) {
-    return JSON.stringify(sortObjectByKey(obj));
-}
-
 setInterval(async function () {
     try {
         if (!accountsWallet) {
@@ -100,10 +80,6 @@ setInterval(async function () {
             document.getElementById("connect").style.display = 'none';
             document.getElementById("fun").style.display = 'block';
             document.getElementById("my_address").textContent = addresses[0].bech32Address;
-        }
-        if (dataSignTransaction) {
-            document.getElementById("Sign_msg_transaction").textContent = dataSignTransaction[0].signature.signature;
-            document.getElementById("Pub_key_transaction").textContent = dataSignTransaction[0].signature.pub_key.value;
         }
 
         if (dataSignFreeMessage) {
