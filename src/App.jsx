@@ -8,7 +8,7 @@ import {Secp256k1, sha256, Secp256k1Signature} from "@cosmjs/crypto";
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 import {Buffer} from "buffer/";
 
-const cosmos = await SigningFinschiaClient.connectWithSigner("https://dsvt-finschia-api.line-apps-beta.com", OfflineDirectSigner)
+const cosmos = await SigningFinschiaClient.connectWithSigner("https://dsvt-finschia-api.line-apps.com", OfflineDirectSigner)
 
 let client;
 let accountsWallet;
