@@ -1,7 +1,6 @@
 import {useState} from 'react'
 import './App.css'
 import WalletConnect from "@walletconnect/client";
-import {SigningFinschiaClient} from "@lbmjs/finschia";
 import {Secp256k1, sha256, Secp256k1Signature} from "@cosmjs/crypto";
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 
