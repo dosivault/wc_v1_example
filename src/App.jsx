@@ -235,14 +235,10 @@ function App() {
     return (
         <div className="App">
             <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src="/vite.svg" className="logo" alt="Vite logo"/>
-                </a>
-                <a href="https://reactjs.org" target="_blank">
-                    <img src={reactLogo} className="logo react" alt="React logo"/>
-                </a>
+                <img src="https://i.pinimg.com/600x315/93/3e/14/933e14abb0241584fd6d5a31bea1ce7b.jpg"></img>
             </div>
-            <h1>For dosi vault test</h1>
+            <h1>dApp Example</h1>
+            WalletConnect v1 + Vault
             <div className="card">
                 <div id="connect">
                     <button onClick={connectWallet}>
@@ -283,9 +279,6 @@ function App() {
                     </div>
                 </div>
             </div>
-            <p className="read-the-docs">
-                Create by tvd12
-            </p>
         </div>
     )
 }
