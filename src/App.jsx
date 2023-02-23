@@ -90,6 +90,8 @@ async function verifySignFreeMsg() {
     const address = addresses[0].bech32Address
     const freeMsg = document.getElementById("free_msg").value;
     const freeMsgBuffer = btoa(freeMsg);
+    // offchain signing spec
+    // https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-036-arbitrary-signature.md
     const signDoc = {
         chain_id: "",
         account_number: "0",
@@ -119,8 +121,6 @@ async function verifySignFreeMsg() {
     const signature = Secp256k1Signature.fromFixedLength(signatureBuffer)
     const verifySignature = await Secp256k1.verifySignature(signature, messageHash, pubKeyBuffer)
     document.getElementById("verify_free_msg").textContent = verifySignature;
-
-
 }
 
 export function sortObjectByKey(obj) {
