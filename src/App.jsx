@@ -241,10 +241,10 @@ function App() {
                     Address: <p id="my_address"></p>
 
                     <div style={{borderBlock: "1px dotted"}}>
-                        Free Msg: <input id="free_msg" value={freeMsg}
+                        Message to sign : <input id="free_msg" value={freeMsg}
                                          onChange={event => setFreeMsg(event.target.value)}/>
                         <button onClick={signFreeMsg}>
-                            Sign free msg
+                            Off-chain sign
                         </button>
                         <div>
                             Signature: <p id="Sign_free_msg"></p>
