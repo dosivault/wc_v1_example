@@ -58,17 +58,6 @@ async function getAddress() {
     })
 }
 
-async function cosmosSignAmino(address, stdSignDoc) {
-    return await client.sendCustomRequest({
-        id: Math.floor(Math.random() * 100000),
-        method: "keplr_sign_amino_wallet_connect_v1",
-        params: [chainId, address, stdSignDoc, {}]
-    }).then((data) => {
-        console.log(data)
-        return data;
-    })
-}
-
 async function signFreeMsg() {
     const addresses = await getAddress();
     const address = addresses[0].bech32Address
