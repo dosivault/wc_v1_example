@@ -133,7 +133,7 @@ setInterval(async function () {
 }, 2000);
 
 function App() {
-    const [freeMsg, setFreeMsg] = useState('DOSI VAULT');
+    const [freeMsg, setFreeMsg] = useState('Any text');
 
     return (
         <div className="App">
