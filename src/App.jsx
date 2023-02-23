@@ -59,10 +59,6 @@ async function getAddress() {
     })
 }
 
-async function getBalance(address, denom) {
-    return await cosmos.getBalance(address, denom)
-}
-
 async function cosmosSignAmino(address, stdSignDoc) {
     return await client.sendCustomRequest({
         id: Math.floor(Math.random() * 100000),
@@ -210,9 +206,6 @@ setInterval(async function () {
             document.getElementById("connect").style.display = 'none';
             document.getElementById("fun").style.display = 'block';
             document.getElementById("my_address").textContent = addresses[0].bech32Address;
-
-            // const balance = await getBalance(addresses[0].bech32Address, denom);
-            // document.getElementById("balance").textContent = (Number(balance.amount) / (10 ** 6));
         }
         if (dataSignTransaction) {
             document.getElementById("Sign_msg_transaction").textContent = dataSignTransaction[0].signature.signature;
@@ -247,9 +240,6 @@ function App() {
                 </div>
                 <div id="fun" style={{display: "none"}}>
                     Address: <p id="my_address"></p>
-
-                    Balance: <p id="balance"></p>
-
 
                     <div style={{borderBlock: "1px dotted"}}>
                         Memo: <input id="memo" value={memo}
