@@ -84,44 +84,6 @@ async function signFreeMsg() {
     })
 }
 
-async function verifySignFreeMsg() {
-    const addresses = await getAddress();
-    const address = addresses[0].bech32Address
-    const freeMsg = document.getElementById("free_msg").value;
-    const freeMsgBuffer = btoa(freeMsg);
-    // offchain signing spec
-    // https://github.com/cosmos/cosmos-sdk/blob/main/docs/architecture/adr-036-arbitrary-signature.md
-    const signDoc = {
-        chain_id: "",
-        account_number: "0",
-        sequence: "0",
-        fee: {
-            gas: "0",
-            amount: [],
-        },
-        msgs: [
-            {
-                type: "sign/MsgSignData",
-                value: {
-                    signer: address,
-                    data: freeMsgBuffer,
-                },
-            },
-        ],
-        memo: "",
-    }
-    const signatureBuffer = Buffer.from(dataSignFreeMessage[0].signature, "base64")
-
-    const messageHash = sha256(Buffer.from(Buffer.from(sortedJsonByKeyStringify(signDoc)), "utf8"));
-    console.log(Buffer.from(messageHash))
-
-    const pubKeyBuffer = Buffer.from(dataSignFreeMessage[0].pub_key.value, "base64");
-
-    const signature = Secp256k1Signature.fromFixedLength(signatureBuffer)
-    const verifySignature = await Secp256k1.verifySignature(signature, messageHash, pubKeyBuffer)
-    document.getElementById("verify_free_msg").textContent = verifySignature;
-}
-
 export function sortObjectByKey(obj) {
     if (typeof obj !== "object" || obj === null) {
         return obj;
@@ -247,11 +209,6 @@ function App() {
                         </button>
                         <div>
                             Signature: <p id="Sign_free_msg"></p>
-                            Pub key: <p id="Pub_free_msg"></p>
-                            Verify result: <span id="verify_free_msg">Null</span>
-                            <button onClick={verifySignFreeMsg}>
-                                Verify Signature
-                            </button>
                         </div>
                     </div>
                 </div>
