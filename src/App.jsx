@@ -23,10 +23,10 @@ async function connectWallet() {
     client = new WalletConnect({
         bridge: 'https://bridge.walletconnect.org',
         clientMeta: {
-            name: "Bithumb",
-            description: "Blockchain Wallet for All - DOSI Vault",
-            url: "https://www.bithumb.com",
-            icons: ["https://play-lh.googleusercontent.com/_gGIl1OGnFwwfFtTej3wtt-J-2oyz-XkQAyhVWho7mJffyZV_J4DYhXhyyYxB7oMEx-q=s96-rw"],
+            name: "dApp example",
+            description: "Just another dApp",
+            url: "https://dapp.example/com",
+            icons: ["https://i.pinimg.com/600x315/93/3e/14/933e14abb0241584fd6d5a31bea1ce7b.jpg"],
         },
     });
 
