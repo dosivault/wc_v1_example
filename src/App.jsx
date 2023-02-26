@@ -3,16 +3,14 @@ import './App.css'
 import WalletConnect from "@walletconnect/client";
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 
-let client;
-let accountsWallet;
-
 const CHAIN_ID = "finschia-1";
 
-// after successful connection.
-let dataSignFreeMessage;
-
-async function connectWallet() {
-    client = new WalletConnect({
+function App() {
+    const [address, setAddress] = useState(null);
+    const [msgToSign, setMsgToSign] = useState('Any text');
+    const [signature, setSignature] = useState(null);
+    
+    const client = new WalletConnect({
         bridge: 'https://bridge.walletconnect.org',
         clientMeta: {
             name: "dApp example",
@@ -22,80 +20,47 @@ async function connectWallet() {
         },
     });
 
-    client.on("connect", async (error, payload) => {
-        if (error) {
-            throw error;
+    async function connectWallet() {    
+        client.on("connect", async (error, payload) => {
+            if (error) {
+                throw error;
+            }
+            // no useful information in 'payload' since WalletConnect v1 is only for EVM-compatible chains
+            // https://github.com/chainapsis/keplr-wallet/blob/master/packages/mobile/src/stores/wallet-connect/index.ts#L42
+            console.log('on "connect"', payload);
+            const addrFromVault = await fetchAddress();
+            setAddress(addrFromVault);
+            WalletConnectQRCodeModal.close();
+        });
+    
+        client.on("disconnect", (error, payload) => {
+            setAddress(null);
+        });
+
+        if (!client.connected) {
+            await client.createSession();
         }
-        console.log('on "connect"', payload);
-        // Get provided accounts and chainId
-        accountsWallet = await getAddress();
-        WalletConnectQRCodeModal.close();
-    });
-
-    client.on("disconnect", (error, payload) => {
-        console.log('on "disconnect"', payload);
-    });
-
-    client.on('session_request', (error, payload) => {
-    });
-
-    if (!client.connected) {
-        await client.createSession();
+        WalletConnectQRCodeModal.open(client.uri);
     }
-    WalletConnectQRCodeModal.open(client.uri);
-}
 
-
-async function getAddress() {
-    return client.sendCustomRequest({
-        id: Math.floor(Math.random() * 100000),
-        method: "keplr_get_key_wallet_connect_v1",
-        params: [CHAIN_ID],
-    })
-}
-
-async function signFreeMsg() {
-    const addresses = await getAddress();
-    const address = addresses[0].bech32Address
-    const freeMsg = document.getElementById("free_msg").value;
-    return await client.sendCustomRequest({
-        id: Math.floor(Math.random() * 100000),
-        method: "keplr_sign_free_message_wallet_connect_v1",
-        params: [CHAIN_ID, address, freeMsg],
-    }).then(async (data) => {
-        dataSignFreeMessage = data;
-        console.log(dataSignFreeMessage)
-        return data;
-    })
-}
-
-setInterval(async function () {
-    try {
-        if (!accountsWallet) {
-            return;
-        }
-        if (!client) {
-            document.getElementById("connect").style.display = 'block';
-            document.getElementById("fun").style.display = 'none';
-        }
-        const addresses = accountsWallet;
-        if (addresses.length > 0) {
-            document.getElementById("connect").style.display = 'none';
-            document.getElementById("fun").style.display = 'block';
-            document.getElementById("my_address").textContent = addresses[0].bech32Address;
-        }
-
-        if (dataSignFreeMessage) {
-            document.getElementById("Sign_free_msg").textContent = dataSignFreeMessage[0].signature;
-            document.getElementById("Pub_free_msg").textContent = dataSignFreeMessage[0].pub_key.value;
-        }
-
-    } catch (e) {
+    async function fetchAddress() {
+        // Keplr returns only an active address despite it's in a form of an array
+        const accounts = await client.sendCustomRequest({
+            id: Math.floor(Math.random() * 100000),
+            method: "keplr_get_key_wallet_connect_v1",
+            params: [CHAIN_ID],
+        });
+        return accounts[0].bech32Address;
     }
-}, 2000);
 
-function App() {
-    const [freeMsg, setFreeMsg] = useState('Any text');
+    async function handleSignArbitraryMsg() {
+        const [resp] = await client.sendCustomRequest({
+            id: Math.floor(Math.random() * 100000),
+            method: "keplr_sign_free_message_wallet_connect_v1",
+            params: [CHAIN_ID, address, msgToSign],
+        });
+        setSignature(resp.signature);
+    }
 
     return (
         <div className="App">
@@ -105,22 +70,22 @@ function App() {
             <h1>dApp Example</h1>
             WalletConnect v1 + Vault
             <div className="card">
-                <div id="connect">
+                <div hidden={!!address}>
                     <button onClick={connectWallet}>
                         Connect
                     </button>
                 </div>
-                <div id="fun" style={{display: "none"}}>
-                    Address: <p id="my_address"></p>
+                <div hidden={!address}>
+                    Address: {address}
 
                     <div style={{borderBlock: "1px dotted"}}>
-                        Message to sign : <input id="free_msg" value={freeMsg}
-                                         onChange={event => setFreeMsg(event.target.value)}/>
-                        <button onClick={signFreeMsg}>
+                        Message to sign :
+                        <input value={msgToSign} onChange={e => setMsgToSign(e.target.value)}/>
+                        <button onClick={handleSignArbitraryMsg}>
                             Off-chain sign
                         </button>
                         <div>
-                            Signature: <p id="Sign_free_msg"></p>
+                            Signature: <p>{signature}</p>
                         </div>
                     </div>
                 </div>
