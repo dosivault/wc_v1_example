@@ -26,9 +26,14 @@ async function connectWallet() {
         if (error) {
             throw error;
         }
+        console.log('on "connect"', payload);
         // Get provided accounts and chainId
-        accountsWallet = await getAddress()
+        accountsWallet = await getAddress();
         WalletConnectQRCodeModal.close();
+    });
+
+    client.on("disconnect", (error, payload) => {
+        console.log('on "disconnect"', payload);
     });
 
     client.on('session_request', (error, payload) => {
@@ -42,12 +47,10 @@ async function connectWallet() {
 
 
 async function getAddress() {
-    return await client.sendCustomRequest({
+    return client.sendCustomRequest({
         id: Math.floor(Math.random() * 100000),
         method: "keplr_get_key_wallet_connect_v1",
         params: [CHAIN_ID],
-    }).then((data) => {
-        return data;
     })
 }
 
