@@ -6,7 +6,7 @@ import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 let client;
 let accountsWallet;
 
-let chainId = "finschia-1";
+const CHAIN_ID = "finschia-1";
 
 // after successful connection.
 let dataSignFreeMessage;
@@ -45,7 +45,7 @@ async function getAddress() {
     return await client.sendCustomRequest({
         id: Math.floor(Math.random() * 100000),
         method: "keplr_get_key_wallet_connect_v1",
-        params: [chainId],
+        params: [CHAIN_ID],
     }).then((data) => {
         return data;
     })
@@ -58,7 +58,7 @@ async function signFreeMsg() {
     return await client.sendCustomRequest({
         id: Math.floor(Math.random() * 100000),
         method: "keplr_sign_free_message_wallet_connect_v1",
-        params: [chainId, address, freeMsg],
+        params: [CHAIN_ID, address, freeMsg],
     }).then(async (data) => {
         dataSignFreeMessage = data;
         console.log(dataSignFreeMessage)
