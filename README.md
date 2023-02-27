@@ -1,11 +1,17 @@
 # 실행법
 
-```
+## 로컬
+
+```bash
 yarn
 yarn run dev
 ```
 
 goto http://127.0.0.1:5173/
+
+## Demo
+
+<https://wc-v1-example.vercel.app/>
 
 ## 유의사항
 
