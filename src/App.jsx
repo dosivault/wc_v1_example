@@ -6,6 +6,7 @@ import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 const CHAIN_ID = "finschia-1";
 
 function App() {
+    const [sessionConnected, setSessionConnected] = useState(false);
     const [address, setAddress] = useState(null);
     const [msgToSign, setMsgToSign] = useState('Any text');
     const [signature, setSignature] = useState(null);
@@ -23,17 +24,20 @@ function App() {
     async function connectWallet() {    
         client.on("connect", async (error, payload) => {
             if (error) {
+                setSessionConnected(false);
                 throw error;
             }
+            WalletConnectQRCodeModal.close();
+            setSessionConnected(true);
             // no useful information in 'payload' since WalletConnect v1 is only for EVM-compatible chains
             // https://github.com/chainapsis/keplr-wallet/blob/master/packages/mobile/src/stores/wallet-connect/index.ts#L42
             console.log('on "connect"', payload);
             const addrFromVault = await fetchAddress();
             setAddress(addrFromVault);
-            WalletConnectQRCodeModal.close();
         });
     
         client.on("disconnect", (error, payload) => {
+            setSessionConnected(false);
             setAddress(null);
         });
 
@@ -63,7 +67,7 @@ function App() {
     }
 
     return (
-        <div className="App">
+        <div className="App" style={{ backgroundColor: sessionConnected ? 'yellow' : 'white' }}>
             <div>
                 <img src="https://i.pinimg.com/600x315/93/3e/14/933e14abb0241584fd6d5a31bea1ce7b.jpg"></img>
             </div>
