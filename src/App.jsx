@@ -1,51 +1,64 @@
-import {useState} from 'react'
+import {useEffect, useState} from 'react'
 import './App.css'
 import WalletConnect from "@walletconnect/client";
 import WalletConnectQRCodeModal from "@walletconnect/qrcode-modal";
 
 const CHAIN_ID = "finschia-1";
+let client = new WalletConnect({
+    bridge: 'https://bridge.walletconnect.org',
+    clientMeta: {
+        name: "dApp example",
+        description: "Just another dApp",
+        url: "https://dapp.example/com",
+        icons: ["https://i.pinimg.com/600x315/93/3e/14/933e14abb0241584fd6d5a31bea1ce7b.jpg"],
+    },
+});
 
 function App() {
-    const [sessionConnected, setSessionConnected] = useState(false);
+    const [sessionUri, setSessionUri] = useState(null);
     const [address, setAddress] = useState(null);
     const [msgToSign, setMsgToSign] = useState('Any text');
     const [signature, setSignature] = useState(null);
     
-    const client = new WalletConnect({
-        bridge: 'https://bridge.walletconnect.org',
-        clientMeta: {
-            name: "dApp example",
-            description: "Just another dApp",
-            url: "https://dapp.example/com",
-            icons: ["https://i.pinimg.com/600x315/93/3e/14/933e14abb0241584fd6d5a31bea1ce7b.jpg"],
-        },
-    });
-
-    async function connectWallet() {    
+    useEffect(() => {
+        // componentDidMount()
         client.on("connect", async (error, payload) => {
             if (error) {
-                setSessionConnected(false);
+                setSessionUri(null);
                 throw error;
             }
             WalletConnectQRCodeModal.close();
-            setSessionConnected(true);
             // no useful information in 'payload' since WalletConnect v1 is only for EVM-compatible chains
             // https://github.com/chainapsis/keplr-wallet/blob/master/packages/mobile/src/stores/wallet-connect/index.ts#L42
-            console.log('on "connect"', payload);
+            console.log('on "connect"', payload, client.connected);
             const addrFromVault = await fetchAddress();
             setAddress(addrFromVault);
         });
     
         client.on("disconnect", (error, payload) => {
-            setSessionConnected(false);
-            client.killSession();
+            setSessionUri(null);
             setAddress(null);
         });
-
-        if (!client.connected) {
+    
+        (async () => {
+            // create a session on page load
             await client.createSession();
-        }
+            setSessionUri(client.uri);
+        })();
+        return () => {    // clean up (componetWillUnmount)
+            client.off("connect");
+            client.off("disconnect");
+        };
+    }, []);
+    
+    async function showQRCodeModal() {
+        console.log('connectWallet() clientid', client.clientId);
         WalletConnectQRCodeModal.open(client.uri);
+    }
+
+    function getDynamicLinkUrl(wcUrl) {
+        const encodedUrl = encodeURIComponent(wcUrl);
+        return `https://dosivault.page.link/qL6j?uri_wc=${encodedUrl}`;
     }
 
     async function fetchAddress() {
@@ -68,17 +81,24 @@ function App() {
     }
 
     return (
-        <div className="App" style={{ backgroundColor: sessionConnected ? 'yellow' : 'white' }}>
+        <div className="App" style={{ backgroundColor: client.session.key ? 'white' : 'grey' }}>
             <div>
                 <img src="https://i.pinimg.com/600x315/93/3e/14/933e14abb0241584fd6d5a31bea1ce7b.jpg"></img>
             </div>
             <h1>dApp Example</h1>
-            WalletConnect v1 + Vault
+            <h2>WalletConnect v1 + Vault</h2>
+            <div>Session URI: {sessionUri}</div>
+            
             <div className="card">
                 <div hidden={!!address}>
-                    <button onClick={connectWallet}>
-                        Connect
-                    </button>
+                    <div>
+                        <button onClick={showQRCodeModal}>
+                            Connect (QR Modal)
+                        </button>
+                    </div>
+                    <div>
+                        <a href={getDynamicLinkUrl(sessionUri)}>Dynamic link</a>
+                    </div>
                 </div>
                 <div hidden={!address}>
                     Address: {address}
