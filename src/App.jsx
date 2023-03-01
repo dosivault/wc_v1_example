@@ -57,8 +57,12 @@ function App() {
     }
 
     function getDynamicLinkUrl(wcUrl) {
-        const encodedUrl = encodeURIComponent(wcUrl);
-        return `https://dosivault.page.link/qL6j?uri_wc=${encodedUrl}`;
+        if(!!wcUrl) {
+            const encodedUrl = encodeURIComponent(wcUrl);
+            return `https://dosivault.page.link/qL6j?uri_wc=${encodedUrl}`;
+        } else {
+            return `https://dosivault.page.link/qL6j`;
+        }
     }
 
     async function fetchAddress() {
@@ -109,6 +113,9 @@ function App() {
                         <button onClick={handleSignArbitraryMsg}>
                             Off-chain sign
                         </button>
+                        <a href={getDynamicLinkUrl()}>
+                            Bring Vault to front
+                        </a>
                         <div>
                             Signature: <p>{signature}</p>
                         </div>
