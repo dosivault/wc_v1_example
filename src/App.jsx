@@ -38,6 +38,7 @@ function App() {
     
         client.on("disconnect", (error, payload) => {
             setSessionConnected(false);
+            client.killSession();
             setAddress(null);
         });
 
