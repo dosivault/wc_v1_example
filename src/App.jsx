@@ -40,13 +40,6 @@ function App() {
             setAddress(null);
         });
     
-        (async () => {
-            // create a session on page load
-            if(!client.session.key) {
-                await client.createSession();
-                setSessionUri(client.uri);    
-            }
-        })();
         return () => {    // clean up (componetWillUnmount)
             client.off("connect");
             client.off("disconnect");
@@ -54,7 +47,12 @@ function App() {
     }, []);
     
     async function showQRCodeModal() {
-        console.log('connectWallet() clientid', client.clientId);
+        console.log('connectWallet() clientId', client.clientId);
+        // create a session on page load
+        if(!client.connected) {
+            await client.createSession();
+        }
+        setSessionUri(client.uri);   
         WalletConnectQRCodeModal.open(client.uri);
     }
 
