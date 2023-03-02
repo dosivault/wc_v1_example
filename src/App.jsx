@@ -42,8 +42,10 @@ function App() {
     
         (async () => {
             // create a session on page load
-            await client.createSession();
-            setSessionUri(client.uri);
+            if(!client.session.key) {
+                await client.createSession();
+                setSessionUri(client.uri);    
+            }
         })();
         return () => {    // clean up (componetWillUnmount)
             client.off("connect");
@@ -122,6 +124,7 @@ function App() {
                     </div>
                 </div>
             </div>
+            <footer><a href='https://github.com/dosivault/wc_v1_example'>Source code</a></footer>
         </div>
     )
 }
