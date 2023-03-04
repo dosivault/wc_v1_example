@@ -74,6 +74,7 @@ function App() {
             method: "keplr_get_key_wallet_connect_v1",
             params: [CHAIN_ID],
         });
+        console.log('fetched account:', accounts[0]);
         return accounts[0].bech32Address;
     }
 
