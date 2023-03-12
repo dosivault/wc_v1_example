@@ -45,6 +45,9 @@ function App() {
             if(!client.session.key) {
                 await client.createSession();
                 setSessionUri(client.uri);    
+            } else {
+                console.log("1) found existing session", client.sessionUri);
+                console.log("2) session key", client.session);
             }
         })();
         return () => {    // clean up (componetWillUnmount)
