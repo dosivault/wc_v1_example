@@ -36,19 +36,19 @@ function App() {
         });
     
         client.on("disconnect", (error, payload) => {
+            console.log('on "disconnect"');
             setSessionUri(null);
             setAddress(null);
         });
     
         (async () => {
             // create a session on page load
-            if(!client.session.key) {
-                await client.createSession();
-                setSessionUri(client.uri);    
-            } else {
-                console.log("1) found existing session", client.sessionUri);
-                console.log("2) session key", client.session);
+            if(client.connected) {
+                await client.killSession();
             }
+
+            await client.createSession();
+            setSessionUri(client.uri);    
         })();
         return () => {    // clean up (componetWillUnmount)
             client.off("connect");
