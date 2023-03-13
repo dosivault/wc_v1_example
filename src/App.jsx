@@ -21,6 +21,7 @@ function App() {
     const [signature, setSignature] = useState(null);
     
     useEffect(() => {
+        console.log('like componentDidMount()');
         // componentDidMount()
         client.on("connect", async (error, payload) => {
             if (error) {
@@ -51,6 +52,7 @@ function App() {
             setSessionUri(client.uri);    
         })();
         return () => {    // clean up (componetWillUnmount)
+            console.log('like componentWillUnmount()');
             client.off("connect");
             client.off("disconnect");
         };
