@@ -128,7 +128,12 @@ function App() {
                     </div>
                 </div>
             </div>
-            <footer><a href='https://github.com/dosivault/wc_v1_example'>Source code</a></footer>
+            <footer>
+                <h3>
+                    <a href='https://github.com/dosivault/wc_v1_example'>Source code</a>
+                </h3>
+                <button onClick={() => { client.killSession() }}>Kill Session Manually (only for Debugging)</button>
+            </footer>
         </div>
     )
 }
