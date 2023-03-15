@@ -19,6 +19,7 @@ function App() {
     const [address, setAddress] = useState(null);
     const [msgToSign, setMsgToSign] = useState('Any text');
     const [signature, setSignature] = useState(null);
+    const [dynamicLinkBase, setDynamicLinkBase] = useState("https://dosivault.page.link/qL6j");
     
     useEffect(() => {
         console.log('like componentDidMount()');
@@ -66,9 +67,9 @@ function App() {
     function getDynamicLinkUrl(wcUrl) {
         if(!!wcUrl) {
             const encodedUrl = encodeURIComponent(wcUrl);
-            return `https://dosivault.page.link/qL6j?uri_wc=${encodedUrl}`;
+            return `${dynamicLinkBase}?uri_wc=${encodedUrl}`;
         } else {
-            return `https://dosivault.page.link/qL6j`;
+            return dynamicLinkBase;
         }
     }
 
@@ -135,6 +136,10 @@ function App() {
                     <a href='https://github.com/dosivault/wc_v1_example'>Source code</a>
                 </h3>
                 <button onClick={() => { client.killSession() }}>Kill Session Manually (only for Debugging)</button>
+                <div className='card'>
+                    <label>Dynamic link base</label>
+                    <input  type="url" value={dynamicLinkBase} onChange={ e=> setDynamicLinkBase(e.target.value) } />
+                </div>
             </footer>
         </div>
     )
